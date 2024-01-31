@@ -1,0 +1,2 @@
+__main__ - INFO - Creating venv: 2.8.0
+__main__ - CRITICAL - Error executing command: source ./packages/2.8.0/bin/activate && pip install keras==2.8.0 numpy pandas os abc timeit sklearn
