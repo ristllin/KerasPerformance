@@ -7,7 +7,9 @@ from sklearn.datasets import fetch_20newsgroups
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.naive_bayes import MultinomialNB
 from sklearn.metrics import accuracy_score
+import logging
 
+logger = logging.getLogger("Keras_Performance")
 
 def load_data():
   data, labels = fetch_20newsgroups(return_X_y=True)
@@ -115,26 +117,29 @@ class GPT2(Model):
     raise NotImplemented
 
 def main():
-    print("running!")
-    # models = [Bayesian]  # , BiLSTM, GPT2]
-    # column_names = ["keras_version", "model", "GPU", "train_duration", "inference_duration"]
-    # Acceleration = ["CPU", "GPU"]
-    # REPETITIONS = 2
-    #
-    # train_set, test_set = load_data()
-    # results = pd.DataFrame(columns=column_names)
-    #
-    # for Accelerator in Acceleration:
-    #     for model in models:
-    #         model_instance = model(Accelerator)
-    #         train_duration = timeit(model_instance.train(train_set), number=REPETITIONS)
-    #         inference_duration = timeit(model_instance.predict(test_set), number=REPETITIONS)
-    #         current_results = {"keras_version": keras_version,
-    #                            "model": model.get_name(),
-    #                            "Acceleration": Accelerator,
-    #                            "train_duration": train_duration,
-    #                            "inference_duration": inference_duration}
-    #         results = results.append(new_row, ignore_index=True)
+    models = [Bayesian]  # , BiLSTM, GPT2]
+    column_names = ["keras_version", "model", "GPU", "train_duration", "inference_duration"]
+    Acceleration = ["CPU", "GPU"]
+    REPETITIONS = 2
+
+    train_set, test_set = load_data()
+    results = pd.DataFrame(columns=column_names)
+
+    for Accelerator in Acceleration:
+        for model in models:
+            logger.info(f"Running {model} with {Accelerator}")
+            model_instance = model(Accelerator)
+            train_duration = timeit(model_instance.train(train_set), number=REPETITIONS)
+            inference_duration = timeit(model_instance.predict(test_set), number=REPETITIONS)
+            current_results = {"keras_version": keras_version,
+                               "model": model.get_name(),
+                               "Acceleration": Accelerator,
+                               "train_duration": train_duration,
+                               "inference_duration": inference_duration}
+            results = results.append(current_results, ignore_index=True)
+            logger.info(f"Running {model} finished training in {train_duration} and inference in {inference_duration}")
+    print(results)
+
 
 if __name__ == "__main__":
     main()
